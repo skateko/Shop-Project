@@ -1,0 +1,80 @@
+﻿@model IEnumerable<(Article,Int32)>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1>Your Cart</h1>
+
+<div class=text-center>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Item1.ArticleName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Item1.Price)
+                </th>
+                <th>
+                    Amount
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Item1.Category)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) 
+    {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1.ArticleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item2)
+                </td>
+                <td>
+                    @{
+                        if (item.Item1.ImageName != "NoImage.jpg")
+                        {
+                            var thumbname = item.Item1.ImageName.Substring(0, item.Item1.ImageName.Length - 4) + "Thumb.jpg";
+                            <img src="~/upload/@thumbname"/>
+                        }
+                        else
+                        {
+                            <img src="~/image/@item.Item1.ImageName"/>
+                        } 
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1.Category.CategoryName)
+                </td>
+                <td>
+                    <a asp-action="EditCart" asp-route-id="@item.Item1.ArticleId">Edit</a> |
+                    <a asp-action="DeleteFromCart" asp-route-id="@item.Item1.ArticleId">Delete</a>
+                </td>
+            </tr>
+    }
+            <tr>
+                <td>Sum</td>
+                <td class=@ViewData["BasketType"]>@ViewData["OverallPrice"]</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <div class="form-group">
+                        <input type="button" class="btn btn-primary" value="Submit Order" onclick="location.href='@Url.Action("Order", "Cart")'" />
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

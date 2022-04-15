@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @{
+        @using System.Security.Claims;
+        //var userIdentity = (ClaimsIdentity)User.Identity;
+        //var claims = userIdentity.Claims;
+        //var roleClaimType = userIdentity.RoleClaimType;
+        //var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+        //var roles = claims.Where(c => c.Type == roleClaimType).ToList();
+        var roles = ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value);
+        @foreach (var role in roles)
+        {
+            Console.WriteLine("role");
+            <p>@role</p>
+            Console.WriteLine(role);
+            var czyprawda = ((ClaimsIdentity)User.Identity).Claims
+                .Where(c => c.Type == ClaimTypes.Role)
+                .Select(c => c.Value).Contains("Admin");
+            Console.WriteLine(czyprawda);
+        }
+    }
+</div>

@@ -1,0 +1,54 @@
+﻿@model L11.Models.Category
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<h1>Category Details @Html.DisplayFor(model => model.CategoryName)</h1>
+
+<div class=text-center>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Photo</th>
+                @if (!User.IsInRole("Admin"))
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in ViewData["Articles"] as IEnumerable<Article>)
+            {
+                <tr>
+                    <td>@item.ArticleName</td>
+                    <td>@item.Price</td>
+                    <td>
+                    @{
+                        if (item.ImageName != "NoImage.jpg")
+                        {
+                            var thumbname = item.ImageName.Substring(0, item.ImageName.Length - 4) + "Thumb.jpg";
+                            <img src="~/upload/@thumbname"/>
+                        }
+                        else
+                        {
+                            <img src="~/image/@item.ImageName"/>
+                        } 
+                    }
+                    </td>
+                    @if (!User.IsInRole("Admin"))
+                    {
+                        <td>
+                            <a asp-controller="Cart" asp-action="AddToCart" asp-route-id="@item.ArticleId">Add to cart</a>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        <a asp-action="Index">Back to Select</a>
+    </div>
+ </div>

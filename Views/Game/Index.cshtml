@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome to guess number game!</h1>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Operation</th>
+                <th>Range</th>
+                <th>Total attempts</th>
+                <th>User Number</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@ViewBag.OperationType</td>
+                <td>@ViewBag.Range</td>
+                <td>@ViewBag.Counter</td>
+                <td>@ViewBag.UserNumber</td>
+                <td class="@ViewBag.GameState">@ViewBag.Message</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

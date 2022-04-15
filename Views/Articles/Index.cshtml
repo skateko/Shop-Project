@@ -1,0 +1,167 @@
+﻿@model IEnumerable<Article>
+
+@{
+    ViewData["Title"] = "Articles";
+}
+
+<h1>Articles</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <div><a asp-action="Create">Create New</a></div>
+}
+<div class=text-center>
+    <table id="mytable" class="styled-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ArticleName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model) 
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ArticleName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @{
+                            if (item.ImageName != "NoImage.jpg")
+                            {
+                                var thumbname = item.ImageName.Substring(0, item.ImageName.Length - 4) + "Thumb.jpg";
+                                <img src="~/upload/@thumbname"/>
+                            }
+                            else
+                            {
+                                <img src="~/image/@item.ImageName"/>
+                            } 
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                    </td>
+                    <td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ArticleId">Edit</a> <text>|</text>
+                            <a asp-action="Delete" asp-route-id="@item.ArticleId">Delete</a> <text>|</text>
+                        }
+                        <a asp-action="Details" asp-route-id="@item.ArticleId">Details</a>
+                    </td>
+                </tr>
+            } 
+        </tbody>
+    </table>
+    <div>
+        JavaScript(AJAX):
+        @{
+            @using System.Security.Claims
+            var isAdmin = ((ClaimsIdentity)User.Identity).Claims
+                            .Where(c => c.Type == ClaimTypes.Role)
+                            .Select(c => c.Value).Contains("Admin");
+        }
+        <button onclick="jsNext(@isAdmin.ToString().ToLower())"> Next </button>
+    </div>
+</div>
+
+ @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script type="text/javascript">
+    function jsAjax(word, toSkip, toAdd, isAdmin) {
+        const  xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+            if (this.status === 200) {
+                try {
+                    const articles = JSON.parse(this.responseText);
+                    console.log(this.responseText);
+                    var tbodyref = document.getElementById("mytable").getElementsByTagName('tbody')[0];
+                    for (var key in articles)
+                    {
+                        var newRow = tbodyref.insertRow();
+                        newRow.insertCell().innerHTML = articles[key]["articleName"];
+                        newRow.insertCell().innerHTML = articles[key]["price"];
+
+                        if (articles[key]["imageName"] != "NoImage.jpg")
+                        {
+                            var img = document.createElement("IMG");
+                            var name = articles[key]["imageName"].substr(0, articles[key]["imageName"].length - 4);
+                            var imgName = "/upload/" + name + "Thumb.jpg";
+                            img.setAttribute("src", imgName);
+                            newRow.insertCell().appendChild(img);
+                        }
+                        else
+                        {
+                            var img = document.createElement("IMG");
+                            img.setAttribute("src", "/image/NoImage.jpg");
+                            newRow.insertCell().appendChild(img);
+                        }         
+
+                        newRow.insertCell().innerHTML = articles[key]["category"]["categoryName"];
+
+                        var operationCell = newRow.insertCell();
+                        if (isAdmin)
+                        {
+                            var asp1 = document.createElement("a");
+                            asp1.setAttribute("href", "/Articles/Edit/" + articles[key]["articleId"]);
+                            asp1.innerHTML = "Edit";
+                            operationCell.appendChild(asp1);
+
+                            var text1 = document.createElement("text");
+                            text1.innerHTML = " | ";
+                            operationCell.appendChild(text1);
+
+                            var asp2 = document.createElement("a");
+                            asp2.setAttribute("href", "/Articles/Delete/" + articles[key]["articleId"]);
+                            asp2.innerHTML = "Delete";
+                            operationCell.appendChild(asp2);
+
+                            var text2 = document.createElement("text");
+                            text2.innerHTML = " | ";
+                            operationCell.appendChild(text2);
+                        }
+
+                        var asp3 = document.createElement("a");
+                        asp3.setAttribute("href", "/Articles/Details/" + articles[key]["articleId"]);
+                        asp3.innerHTML = "Details";
+                        operationCell.appendChild(asp3);
+                    }
+                } catch (e) {
+                    console.warn('There was an error in JSON. Could not parse.xxxxxxxxxxxxx');
+                }
+            } else if (this.status === 204) { // 204 No Content, so NULL
+                window.alert("No " + word + " element");
+            } else {
+                console.warn("Recived " + this.status+" in response code.");
+            }
+        };
+        let str = "/api/data/articles/next/" + toSkip + "/" + toAdd;
+        console.log(str);
+
+        xhr.open("get", str);
+        xhr.send();
+    }
+
+    function jsNext(isAdmin) {
+        console.log(isAdmin);
+        var tbodyRowCount = document.getElementById("mytable").tBodies[0].rows.length;
+        jsAjax("next", tbodyRowCount, 3, isAdmin);
+    }
+</script>
+}
+

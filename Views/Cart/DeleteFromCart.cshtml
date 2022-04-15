@@ -1,0 +1,56 @@
+﻿@model L11.Models.Article
+
+@{
+    ViewData["Title"] = "Edit Item in Cart";
+}
+
+<h1>Details</h1>
+
+<dd>
+    <h4>Article</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ArticleName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ArticleName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ImageName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ImageName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Category.CategoryName)
+        </dd>
+        <dt>
+        @{
+            if (Model.ImageName != "NoImage.jpg")
+            {
+                <img src="~/upload/@Model.ImageName"/>
+            }
+            else
+            {
+                <img src="~/image/@Model.ImageName"/>
+            } 
+        }
+        </dd>
+    </dl>
+
+    <form asp-action="DeleteFromCart">
+        <input type="hidden" asp-for="ArticleId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

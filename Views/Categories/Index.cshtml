@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<h1>Categories</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <div><a asp-action="Create">Create New</a></div>
+}
+<div class=text-center>
+    @{
+        if (ViewData["DelError"] != null)
+        {
+            <p>@ViewData["DelError"]</p>
+        }
+    }
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryName)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) 
+    {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.CategoryId">Edit</a> <text>|</text>
+                        <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a> <text>|</text>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.CategoryId">Details</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+</div>

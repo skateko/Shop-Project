@@ -1,0 +1,121 @@
+﻿@model IEnumerable<(Article,Int32)>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1 class="text-info">Order Details</h1>
+
+<div class=text-center>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Item1.ArticleName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Item1.Price)
+                </th>
+                <th>
+                    Amount
+                </th>
+                <th>
+                    Image
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Item1.Category)
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) 
+    {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1.ArticleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item2)
+                </td>
+                <td>
+                    @{
+                        if (item.Item1.ImageName != "NoImage.jpg")
+                        {
+                            var thumbname = item.Item1.ImageName.Substring(0, item.Item1.ImageName.Length - 4) + "Thumb.jpg";
+                            <img src="~/upload/@thumbname"/>
+                        }
+                        else
+                        {
+                            <img src="~/image/@item.Item1.ImageName"/>
+                        } 
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item1.Category.CategoryName)
+                </td>
+            </tr>
+    }
+            <tr>
+                <td>Sum</td>
+                <td class=@ViewData["BasketType"]>@ViewData["OverallPrice"]</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+ </div>
+ <h1 class=text-info>Person Details</h1>
+<p class=text-info>Please fill in this form to submit order.</p>
+ <div class="text-center">
+    <form asp-action="OrderConfirm" method="post" enctype="multipart/form-data">
+        <div class="mycontainer">
+            <hr>
+            <label for="name"><b>Name</b></label></br>
+            <input class="mymod" type="text" placeholder="Enter Name" name="name" id="name" required></br>
+
+            <label for="surname"><b>Surname</b></label></br>
+            <input class="mymod" type="text" placeholder="Enter Surname" name="surname" id="surname" required></br>
+
+            <label for="email"><b>Email</b></label></br>
+            <input class="mymod" type="text" placeholder="Enter Email" name="email" id="email" required></br>
+
+            <label for="phone"><b>Phone Number</b></label></br>
+            <input class="mymod" type="tel"  placeholder="000-000-000" name="phone" id="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" required"></br>
+
+            <label for="address"><b>Address</b></label></br>
+            <input class="mymod" type="text" placeholder="Enter Address" name="address" id="address" required></br>
+
+            <label for="date"><b>Date</b></label></br>
+            <input class="mymod" type="date" placeholder="Enter Date" name="date" id="date" required></br>
+
+            <label for="payment"><b>Payment</b></label></br>
+            <label for="payment"><input type="radio" name="payment" value="Przelewy24" required>Przelewy24</label>
+            <label for="payment"><input type="radio" name="payment" value="Zwykly przelew" required>Zwykly przelew</label>
+            <label for="payment"><input type="radio" name="payment" value="Gotowka" required>Gotowka</label>
+
+            <hr>
+            <p>By creating an account you agree to our Terms and policy.</p>
+            @{
+                var price = @ViewData["OverallPrice"].ToString();
+                if (Int32.Parse(price) > 0)
+                {
+                    <button type="submit" class="orderbtn">Order Now</button>
+                }
+                else
+                {
+                    <p>The Cart is empty!</p>
+                }
+            }
+            
+            
+        </div>
+    </form>
+</div>
+    @section Scripts{
+        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+

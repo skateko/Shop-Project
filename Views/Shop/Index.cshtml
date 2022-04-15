@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "ShopController";
+}
+
+<h1>Choose Category</h1>
+
+<div class=text-center>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CategoryName)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    @foreach (var item in Model) 
+    {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    <a asp-action="Shop" asp-route-id="@item.CategoryId">Check details</a>
+                </td>
+            </tr>
+    }
+        </tbody>
+    </table>
+</div>

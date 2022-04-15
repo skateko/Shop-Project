@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Order Sum Up";
+}
+
+<h1 class="text-info">Order Sum up</h1>
+
+<h1 class=text-info>Person Details</h1>
+<p class=text-info>Please fill in this form to submit order.</p>
+<div class="text-center">
+    <div class="mycontainer">
+        <hr>
+        <label for="name"><b>Name</b></label></br>
+        <p>@TempData["name"]</p>
+
+        <label for="surname"><b>Surname</b></label></br>
+        <p>@TempData["surname"]</p>
+
+        <label for="email"><b>Email</b></label></br>
+        <p>@TempData["email"]</p>
+
+        <label for="phone"><b>Phone Number</b></label></br>
+        <p>@TempData["phone"]</p>
+
+        <label for="address"><b>Address</b></label></br>
+        <p>@TempData["address"]</p>
+
+        <label for="date"><b>Date</b></label></br>
+        <p>@TempData["date"]</p>
+
+        <label for="payment"><b>Payment</b></label></br>
+        <p>@TempData["payment"]</p>
+        <hr>
+
+        <a asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+    @section Scripts{
+        @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+
